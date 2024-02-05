@@ -12,23 +12,38 @@ class PomodoroTimer extends StatelessWidget {
       body: SafeArea(
           child: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Consumer<PomodoroTimerViewModel>(
               builder: (BuildContext context, viewmodel, Widget? child) {
-                return Text(viewmodel.minute);
+                return Text(
+                  viewmodel.minute,
+                  style: const TextStyle(
+                      fontSize: 150, fontWeight: FontWeight.bold, height: 0.8),
+                );
               },
             ),
             Consumer<PomodoroTimerViewModel>(
               builder: (BuildContext context, viewmodel, Widget? child) {
-                return Text(viewmodel.second);
+                return Text(
+                  viewmodel.second,
+                  style: const TextStyle(
+                      fontSize: 150, fontWeight: FontWeight.bold, height: 0.8),
+                );
               },
+            ),
+            const SizedBox(
+              height: 25,
             ),
             ElevatedButton(
               onPressed: () {
                 PomodoroTimerViewModel viewmodel =
                     Provider.of(context, listen: false);
-                viewmodel.startTimer(10);
+                //viewmodel.cancelTimer();
+                //viewmodel.startTimer(10);
+                //viewmodel.flip.initialize(viewmodel.settings);
+                viewmodel.cancelTimer();
+                viewmodel.startTimer(3, context);
               },
               child: const Text("timer"),
             ),
