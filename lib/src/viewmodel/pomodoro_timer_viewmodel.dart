@@ -23,7 +23,7 @@ class PomodoroTimerViewModel with ChangeNotifier {
         if (total == 0) {
           timer.cancel();
         } else if (total == 1) {
-          showNotification(title: "hey", body: "hey", context: context);
+          //showNotification(title: "hey", body: "hey", context: context);
           total--;
           minute = "${total ~/ 60}".padLeft(2, "0");
           second = "${total % 60}".padLeft(2, "0");
