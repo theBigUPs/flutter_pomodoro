@@ -84,6 +84,13 @@ class PomodoroTimerViewModel with ChangeNotifier {
       mainColor = main[0];
       secondaryColor = secondary[0];
       progress = -1;
+    } else if (progress == 6) {
+      totalSeconds = 15;
+      progressIcons[progress ~/ 2] = Icons.fiber_manual_record_rounded;
+      stateIcon = Icons.coffee;
+      stateText = "   Long Break";
+      mainColor = main[2];
+      secondaryColor = secondary[2];
     } else if (progress % 2 == 0) {
       totalSeconds = 5;
       progressIcons[progress ~/ 2] = Icons.fiber_manual_record_rounded;

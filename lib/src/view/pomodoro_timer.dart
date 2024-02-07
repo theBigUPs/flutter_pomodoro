@@ -17,7 +17,7 @@ class PomodoroTimer extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              newMethod(context),
+              status(context),
               const SizedBox(
                 height: 25,
               ),
@@ -74,7 +74,7 @@ class PomodoroTimer extends StatelessWidget {
     );
   }
 
-  Widget newMethod(BuildContext context) {
+  Widget status(BuildContext context) {
     PomodoroTimerViewModel viewmodel = Provider.of(context, listen: false);
     return Container(
       decoration: BoxDecoration(
@@ -171,8 +171,7 @@ class PomodoroTimer extends StatelessWidget {
                 create: (BuildContext context) {
                   return PomodoroSettingsViewModel();
                 },
-                child:
-                    PomodoroSettings(backgroundcolor: viewmodel.secondaryColor),
+                child: PomodoroSettings(dialogColor: viewmodel.secondaryColor),
               );
             },
           );

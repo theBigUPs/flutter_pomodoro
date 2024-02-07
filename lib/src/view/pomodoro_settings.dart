@@ -9,16 +9,16 @@ import 'package:flutter/material.dart';
 //notifications
 
 class PomodoroSettings extends StatelessWidget {
-  final Color backgroundcolor;
+  final Color dialogColor;
 
-  const PomodoroSettings({Key? key, required this.backgroundcolor})
+  const PomodoroSettings({Key? key, required this.dialogColor})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      surfaceTintColor: backgroundcolor,
-      backgroundColor: backgroundcolor,
+      surfaceTintColor: dialogColor,
+      backgroundColor: dialogColor,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
