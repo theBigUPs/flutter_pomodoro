@@ -13,89 +13,97 @@ class PomodoroTimer extends StatelessWidget {
       backgroundColor: Colors.black,
       body: SafeArea(
           child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueAccent),
-                borderRadius: BorderRadius.circular(25),
-                color: const Color(0xff0b1a26),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              newMethod(context),
+              const SizedBox(
+                height: 25,
               ),
-              height: 40,
-              width: 135,
-              child: const Row(
+              Consumer<PomodoroTimerViewModel>(
+                builder: (BuildContext context, viewmodel, Widget? child) {
+                  return Text(
+                    viewmodel.minute,
+                    style: const TextStyle(
+                        fontSize: 150,
+                        fontWeight: FontWeight.bold,
+                        height: 0.8),
+                  );
+                },
+              ),
+              Consumer<PomodoroTimerViewModel>(
+                builder: (BuildContext context, viewmodel, Widget? child) {
+                  return Text(
+                    viewmodel.second,
+                    style: const TextStyle(
+                        fontSize: 150,
+                        fontWeight: FontWeight.bold,
+                        height: 0.8),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.work_history),
-                  //Icon(Icons.coffee),
-                  Text("   Focus"),
+                  settingsButton(context),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  playPauseButton(context),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  nextButton(context),
                 ],
               ),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Consumer<PomodoroTimerViewModel>(
-              builder: (BuildContext context, viewmodel, Widget? child) {
-                return Text(
-                  viewmodel.minute,
-                  style: const TextStyle(
-                      fontSize: 150, fontWeight: FontWeight.bold, height: 0.8),
-                );
-              },
-            ),
-            Consumer<PomodoroTimerViewModel>(
-              builder: (BuildContext context, viewmodel, Widget? child) {
-                return Text(
-                  viewmodel.second,
-                  style: const TextStyle(
-                      fontSize: 150, fontWeight: FontWeight.bold, height: 0.8),
-                );
-              },
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                settingsButton(context),
-                const SizedBox(
-                  width: 15,
-                ),
-                playPauseButton(context),
-                const SizedBox(
-                  width: 15,
-                ),
-                nextButton(context),
-              ],
-            ),
-
-            const SizedBox(
-              height: 100,
-            ),
-            //IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
-          ],
+              const SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                  height: 25,
+                  width: 100,
+                  child: pomodoroProgressIndicator(context)),
+            ],
+          ),
         ),
       )),
     );
   }
 
+  Widget newMethod(BuildContext context) {
+    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: false);
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: viewmodel.mainColor),
+        borderRadius: BorderRadius.circular(25),
+        color: viewmodel.secondaryColor,
+      ),
+      height: 40,
+      width: 135,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(viewmodel.stateIcon),
+          //Icon(Icons.coffee),
+          Text(viewmodel.stateText),
+        ],
+      ),
+    );
+  }
+
   Widget playPauseButton(BuildContext context) {
+    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: false);
     return ElevatedButton(
         onPressed: () {
-          PomodoroTimerViewModel viewmodel =
-              Provider.of(context, listen: false);
-          //viewmodel.cancelTimer();
-          //viewmodel.startTimer(10);
-          //viewmodel.flip.initialize(viewmodel.settings);
-          viewmodel.cancelTimer();
-          viewmodel.startTimer(3, context);
+          viewmodel.startStopTimer(context);
         },
         style: ButtonStyle(
             backgroundColor:
-                MaterialStateProperty.all<Color>(const Color(0xff367ab5)),
+                MaterialStateProperty.all<Color>(viewmodel.mainColor),
             padding: MaterialStateProperty.all(EdgeInsets.zero),
             minimumSize: MaterialStateProperty.all<Size>(
               const Size(100.0, 100.0), // Adjust the width and height as needed
@@ -108,46 +116,52 @@ class PomodoroTimer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30.0),
               ),
             )),
-        child: const Center(
-          child: Icon(
-            Icons.arrow_right,
-            size: 100,
-            color: Colors.white,
-          ),
-        ));
+        child: Center(child: Consumer<PomodoroTimerViewModel>(
+          builder: (BuildContext context, viewmodel, Widget? child) {
+            return Icon(
+              viewmodel.startPauseIcon,
+              size: 100,
+              color: Colors.white,
+            );
+          },
+        )));
   }
 
   Widget nextButton(BuildContext context) {
+    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: true);
     return ElevatedButton(
-        onPressed: () {
-          PomodoroTimerViewModel viewmodel =
-              Provider.of(context, listen: false);
-        },
-        style: ButtonStyle(
-            backgroundColor:
-                MaterialStateProperty.all<Color>(const Color(0xff0b1a26)),
-            padding: MaterialStateProperty.all(EdgeInsets.zero),
-            minimumSize: MaterialStateProperty.all<Size>(
-              const Size(75.0, 75.0), // Adjust the width and height as needed
-            ),
-            maximumSize: MaterialStateProperty.all<Size>(
-              const Size(75.0, 75.0), // Adjust the width and height as needed
-            ),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-            )),
-        child: const Center(
-          child: Icon(
-            Icons.fast_forward_sharp,
-            size: 40,
-            color: Colors.white,
+      onPressed: () {
+        viewmodel.ispaused = true;
+        viewmodel.pomodoroProgress(context);
+        viewmodel.progress++;
+      },
+      style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.all<Color>(viewmodel.secondaryColor),
+          padding: MaterialStateProperty.all(EdgeInsets.zero),
+          minimumSize: MaterialStateProperty.all<Size>(
+            const Size(75.0, 75.0), // Adjust the width and height as needed
           ),
-        ));
+          maximumSize: MaterialStateProperty.all<Size>(
+            const Size(75.0, 75.0), // Adjust the width and height as needed
+          ),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+          )),
+      child: const Center(
+        child: Icon(
+          Icons.fast_forward_sharp,
+          size: 40,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
   Widget settingsButton(BuildContext context) {
+    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: false);
     return ElevatedButton(
         onPressed: () {
           showDialog(
@@ -157,14 +171,15 @@ class PomodoroTimer extends StatelessWidget {
                 create: (BuildContext context) {
                   return PomodoroSettingsViewModel();
                 },
-                child: const PomodoroSettings(),
+                child:
+                    PomodoroSettings(backgroundcolor: viewmodel.secondaryColor),
               );
             },
           );
         },
         style: ButtonStyle(
             backgroundColor:
-                MaterialStateProperty.all<Color>(const Color(0xff0b1a26)),
+                MaterialStateProperty.all<Color>(viewmodel.secondaryColor),
             padding: MaterialStateProperty.all(EdgeInsets.zero),
             minimumSize: MaterialStateProperty.all<Size>(
               const Size(75.0, 75.0), // Adjust the width and height as needed
@@ -184,5 +199,19 @@ class PomodoroTimer extends StatelessWidget {
             color: Colors.white,
           ),
         ));
+  }
+
+  Widget pomodoroProgressIndicator(BuildContext context) {
+    return Consumer<PomodoroTimerViewModel>(
+      builder: (context, viewmodel, child) {
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: viewmodel.progressIcons.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Icon(viewmodel.progressIcons[index]);
+          },
+        );
+      },
+    );
   }
 }
