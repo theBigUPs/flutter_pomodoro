@@ -108,6 +108,7 @@ class PomodoroTimerViewModel with ChangeNotifier {
 
     minute = "${totalSeconds ~/ 60}".padLeft(2, "0");
     second = "${totalSeconds % 60}".padLeft(2, "0");
+    //notifyListeners();
     startStopTimer(context);
   }
 

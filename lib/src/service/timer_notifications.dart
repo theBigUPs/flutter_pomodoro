@@ -23,8 +23,8 @@ class TimerNotifications {
       // },
     );
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      'your_channel_id',
-      'your_channel_name',
+      'pomodoro_timer',
+      'pomodoro_timer_times_up_notification',
       //'your_channel_description',
       importance: Importance.max,
       priority: Priority.high,
