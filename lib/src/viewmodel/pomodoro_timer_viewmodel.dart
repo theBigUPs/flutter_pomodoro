@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_pomodoro/src/service/service_provider.dart';
+import 'package:flutter_pomodoro/src/service/user_settings.dart';
 import 'package:provider/provider.dart';
 
 class PomodoroTimerViewModel with ChangeNotifier {
@@ -12,6 +13,13 @@ class PomodoroTimerViewModel with ChangeNotifier {
   bool ispaused = false;
   IconData startPauseIcon = Icons.arrow_right;
   int progress = 0;
+
+  bool autoResume = false;
+  bool notification = true;
+  String pomolen = "25";
+  String shortlen = "5";
+  String longlen = "15";
+
   List<IconData> progressIcons =
       List.filled(4, Icons.fiber_manual_record_outlined);
   IconData stateIcon = Icons.work_history;
@@ -85,21 +93,21 @@ class PomodoroTimerViewModel with ChangeNotifier {
       secondaryColor = secondary[0];
       progress = -1;
     } else if (progress == 6) {
-      totalSeconds = 15;
+      totalSeconds = int.parse(longlen);
       progressIcons[progress ~/ 2] = Icons.fiber_manual_record_rounded;
       stateIcon = Icons.coffee;
       stateText = "   Long Break";
       mainColor = main[2];
       secondaryColor = secondary[2];
     } else if (progress % 2 == 0) {
-      totalSeconds = 5;
+      totalSeconds = int.parse(shortlen);
       progressIcons[progress ~/ 2] = Icons.fiber_manual_record_rounded;
       stateIcon = Icons.coffee;
       stateText = "   Break";
       mainColor = main[1];
       secondaryColor = secondary[1];
     } else {
-      totalSeconds = 7;
+      totalSeconds = int.parse(pomolen);
       stateIcon = Icons.work_history;
       stateText = "   Focus";
       mainColor = main[0];
@@ -109,7 +117,21 @@ class PomodoroTimerViewModel with ChangeNotifier {
     minute = "${totalSeconds ~/ 60}".padLeft(2, "0");
     second = "${totalSeconds % 60}".padLeft(2, "0");
     //notifyListeners();
-    startStopTimer(context);
+    autoResume ? notifyListeners() : startStopTimer(context);
+    notification
+        ? showNotification(title: stateText.trim(), body: "", context: context)
+        : null;
+  }
+
+  Future<void> getSettings(BuildContext context) async {
+    UserSettings userSettings = Provider.of(context, listen: false);
+    await userSettings.init();
+    pomolen = userSettings.pomoLen;
+    shortlen = userSettings.shortBreakLen;
+    longlen = userSettings.longBreakLen;
+    autoResume = userSettings.autoResume;
+    notification = userSettings.notification;
+    minute = pomolen;
   }
 
   void showNotification(

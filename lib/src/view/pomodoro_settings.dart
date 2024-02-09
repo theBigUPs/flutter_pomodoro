@@ -23,13 +23,16 @@ class PomodoroSettings extends StatefulWidget {
 }
 
 class PomodoroSettingsState extends State<PomodoroSettings> {
-  TextEditingController? _controller1;
-  TextEditingController? _controller2;
-  TextEditingController? _controller3;
+  late TextEditingController _controller1;
+  late TextEditingController _controller2;
+  late TextEditingController _controller3;
 
   @override
   void initState() {
     super.initState();
+    PomodoroSettingsViewModel pomodoroSettingsViewmodel =
+        Provider.of(context, listen: false);
+    pomodoroSettingsViewmodel.getSettings(context);
     _controller1 = TextEditingController();
     _controller2 = TextEditingController();
     _controller3 = TextEditingController();
@@ -37,9 +40,9 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
 
   @override
   void dispose() {
-    _controller1?.dispose();
-    _controller2?.dispose();
-    _controller3?.dispose();
+    _controller1.dispose();
+    _controller2.dispose();
+    _controller3.dispose();
     //print("qwer"); this gets called when the dialog is popped regardless of the button being pressed
     super.dispose();
   }
@@ -64,19 +67,22 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            settingTextFieldTile("Pomodoro length", "25", _controller1),
-            settingTextFieldTile("Short break length", "5", _controller2),
-            settingTextFieldTile("Long break length", "15", _controller3),
+            settingTextFieldTile(
+                "Pomodoro length", "25", _controller1, "pomolenkey"),
+            settingTextFieldTile(
+                "Short break length", "5", _controller2, "shortbreaklenkey"),
+            settingTextFieldTile(
+                "Long break length", "15", _controller3, "longbreaklenkey"),
             settingSwitchTile("Auto resume timer", "autoresumekey"),
-            settingSwitchTile("Notification", "notification"),
+            settingSwitchTile("Notification", "notificationkey"),
           ],
         ),
       ),
     );
   }
 
-  Widget settingTextFieldTile(
-      String text, String inputText, TextEditingController? controller) {
+  Widget settingTextFieldTile(String text, String inputText,
+      TextEditingController controller, String key) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       title: Text(
@@ -88,8 +94,13 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
         height: 40,
         width: 50,
         child: TextField(
-          controller: controller?..text = inputText,
-          onChanged: (text) => {},
+          controller: controller..text = inputText,
+          onChanged: (text) {
+            PomodoroSettingsViewModel pomodoroSettingsViewmodel =
+                Provider.of(context, listen: false);
+            pomodoroSettingsViewmodel.saveStringSettings(
+                controller, context, key);
+          },
 
           textAlignVertical: TextAlignVertical.center,
           textAlign: TextAlign.center, // Align text in the center
@@ -150,7 +161,7 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
                       ? const Color(0xffff0000)
                       : const Color(0xff0000ff),
               onChanged: (bool value) {
-                viewmodel.updateSwitch(key);
+                viewmodel.updateSwitch(key, context);
               },
             );
           },

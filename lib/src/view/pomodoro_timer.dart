@@ -4,8 +4,20 @@ import 'package:flutter_pomodoro/src/viewmodel/pomodoro_settings_viewmodel.dart'
 import 'package:flutter_pomodoro/src/viewmodel/pomodoro_timer_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class PomodoroTimer extends StatelessWidget {
+class PomodoroTimer extends StatefulWidget {
   const PomodoroTimer({super.key});
+
+  @override
+  State<PomodoroTimer> createState() => _PomodoroTimerState();
+}
+
+class _PomodoroTimerState extends State<PomodoroTimer> {
+  @override
+  void initState() {
+    super.initState();
+    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: true);
+    viewmodel.getSettings(context);
+  }
 
   @override
   Widget build(BuildContext context) {

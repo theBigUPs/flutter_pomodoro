@@ -10,11 +10,11 @@ class UserSettings {
   //sound
   //notifications
   //commented out values are the default values
-  static const String _pomoLenKey = "pomolenkey"; //= 25;
-  static const String _shortBreakLenKey = "shortbreaklenkey"; //= 5;
-  static const String _longBreakLenKey = "longbreaklenkey"; //= 15;
-  static const String _autoResumeKey = "autoresumekey"; //= false;
-  static const String _notificationKey = "notificationkey"; //= true;
+  static const String pomoLenKey = "pomolenkey"; //= 25;
+  static const String shortBreakLenKey = "shortbreaklenkey"; //= 5;
+  static const String longBreakLenKey = "longbreaklenkey"; //= 15;
+  static const String autoResumeKey = "autoresumekey"; //= false;
+  static const String notificationKey = "notificationkey"; //= true;
 
   late SharedPreferences prefs;
 
@@ -22,11 +22,11 @@ class UserSettings {
     prefs = await SharedPreferences.getInstance();
   }
 
-  bool get autoResume => prefs.getBool(_autoResumeKey) ?? false;
-  bool get notification => prefs.getBool(_notificationKey) ?? true;
-  String get pomoLen => prefs.getString(_pomoLenKey) ?? "25";
-  String get longBreakLen => prefs.getString(_longBreakLenKey) ?? "15";
-  String get shortBreakLen => prefs.getString(_shortBreakLenKey) ?? "5";
+  bool get autoResume => prefs.getBool(autoResumeKey) ?? false;
+  bool get notification => prefs.getBool(notificationKey) ?? true;
+  String get pomoLen => prefs.getString(pomoLenKey) ?? "25";
+  String get longBreakLen => prefs.getString(longBreakLenKey) ?? "15";
+  String get shortBreakLen => prefs.getString(shortBreakLenKey) ?? "5";
 
   Future<void> setBool(String key, bool value) async {
     await prefs.setBool(key, value);
