@@ -1,5 +1,3 @@
-import 'dart:js_util';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_pomodoro/src/service/user_settings.dart';
 import 'package:provider/provider.dart';
