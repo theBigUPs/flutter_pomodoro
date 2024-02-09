@@ -85,7 +85,7 @@ class PomodoroTimerViewModel with ChangeNotifier {
 
   void pomodoroProgress(BuildContext context) {
     if (progress == 7) {
-      totalSeconds = 7;
+      totalSeconds = int.parse(pomolen);
       stateIcon = Icons.work_history;
       stateText = "   Focus";
       progressIcons = List.filled(4, Icons.fiber_manual_record_outlined);
