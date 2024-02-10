@@ -15,7 +15,8 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   @override
   void initState() {
     super.initState();
-    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: true);
+
+    PomodoroTimerViewModel viewmodel = Provider.of(context, listen: false);
     viewmodel.getSettings(context);
   }
 
@@ -190,7 +191,9 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               child: PomodoroSettings(dialogColor: viewmodel.secondaryColor),
             );
           },
-        );
+        ).then((value) {
+          viewmodel.getSettings(context);
+        });
       },
       style: ButtonStyle(
           backgroundColor:

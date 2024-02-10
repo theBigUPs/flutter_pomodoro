@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pomodoro/src/service/user_settings.dart';
+import 'package:flutter_pomodoro/src/service/service_provider.dart';
 import 'package:provider/provider.dart';
 
 class PomodoroSettingsViewModel with ChangeNotifier {
@@ -8,6 +8,7 @@ class PomodoroSettingsViewModel with ChangeNotifier {
   String pomolen = "";
   String shortlen = "";
   String longlen = "";
+  bool loaded = false;
   void updateSwitch(String key, BuildContext context) {
     if (key == "autoresumekey") {
       autoResume = !autoResume;
@@ -27,30 +28,43 @@ class PomodoroSettingsViewModel with ChangeNotifier {
   }
 
   Future<void> initSettings(BuildContext context) async {
-    UserSettings userSettings = Provider.of(context, listen: false);
+    final serviceProvider =
+        Provider.of<ServiceProvider>(context, listen: false);
+    var userSettings = serviceProvider.userSettings;
     await userSettings.init();
   }
 
   Future<void> getSettings(BuildContext context) async {
-    UserSettings userSettings = Provider.of(context, listen: false);
+    final serviceProvider =
+        Provider.of<ServiceProvider>(context, listen: false);
+    var userSettings = serviceProvider.userSettings;
+    await userSettings.init();
     pomolen = userSettings.pomoLen;
     shortlen = userSettings.shortBreakLen;
     longlen = userSettings.longBreakLen;
     autoResume = userSettings.autoResume;
     notification = userSettings.notification;
+    loaded = true;
+    notifyListeners();
   }
 
   Future<void> saveStringSettings(TextEditingController controller,
       BuildContext context, String key) async {
-    UserSettings userSettings = Provider.of(context, listen: false);
+    final serviceProvider =
+        Provider.of<ServiceProvider>(context, listen: false);
+    var userSettings = serviceProvider.userSettings;
 
     await userSettings.setString(key, controller.text);
+    print("saved : $key : ${controller.text}");
   }
 
   Future<void> saveBoolSettings(
       BuildContext context, String key, bool value) async {
-    UserSettings userSettings = Provider.of(context, listen: false);
+    final serviceProvider =
+        Provider.of<ServiceProvider>(context, listen: false);
+    var userSettings = serviceProvider.userSettings;
 
     await userSettings.setBool(key, value);
+    print("sdf");
   }
 }

@@ -30,14 +30,18 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
   @override
   void initState() {
     super.initState();
+
     PomodoroSettingsViewModel pomodoroSettingsViewmodel =
         Provider.of(context, listen: false);
     pomodoroSettingsViewmodel.getSettings(context);
+    //pomodoroSettingsViewmodel.initSettings(context);//test if this is needed
+
     _controller1 = TextEditingController();
     _controller2 = TextEditingController();
     _controller3 = TextEditingController();
   }
 
+  @override
   @override
   void dispose() {
     _controller1.dispose();
@@ -49,6 +53,8 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
 
   @override
   Widget build(BuildContext context) {
+    PomodoroSettingsViewModel pomodoroSettingsViewmodel =
+        Provider.of(context, listen: false);
     return AlertDialog(
       surfaceTintColor: widget.dialogColor,
       backgroundColor: widget.dialogColor,
@@ -63,21 +69,36 @@ class PomodoroSettingsState extends State<PomodoroSettings> {
               icon: const Icon(Icons.close))
         ],
       ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            settingTextFieldTile(
-                "Pomodoro length", "25", _controller1, "pomolenkey"),
-            settingTextFieldTile(
-                "Short break length", "5", _controller2, "shortbreaklenkey"),
-            settingTextFieldTile(
-                "Long break length", "15", _controller3, "longbreaklenkey"),
-            settingSwitchTile("Auto resume timer", "autoresumekey"),
-            settingSwitchTile("Notification", "notificationkey"),
-          ],
-        ),
-      ),
+      content:
+          Consumer<PomodoroSettingsViewModel>(builder: (context, viewmodel, _) {
+        if (!viewmodel.loaded) {
+          return Container();
+        }
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              settingTextFieldTile(
+                  "Pomodoro length",
+                  pomodoroSettingsViewmodel.pomolen,
+                  _controller1,
+                  "pomolenkey"),
+              settingTextFieldTile(
+                  "Short break length",
+                  pomodoroSettingsViewmodel.shortlen,
+                  _controller2,
+                  "shortbreaklenkey"),
+              settingTextFieldTile(
+                  "Long break length",
+                  pomodoroSettingsViewmodel.longlen,
+                  _controller3,
+                  "longbreaklenkey"),
+              settingSwitchTile("Auto resume timer", "autoresumekey"),
+              settingSwitchTile("Notification", "notificationkey"),
+            ],
+          ),
+        );
+      }),
     );
   }
 
