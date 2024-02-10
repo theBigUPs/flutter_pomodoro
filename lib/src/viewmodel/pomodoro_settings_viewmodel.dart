@@ -55,7 +55,6 @@ class PomodoroSettingsViewModel with ChangeNotifier {
     var userSettings = serviceProvider.userSettings;
 
     await userSettings.setString(key, controller.text);
-    print("saved : $key : ${controller.text}");
   }
 
   Future<void> saveBoolSettings(
@@ -65,6 +64,5 @@ class PomodoroSettingsViewModel with ChangeNotifier {
     var userSettings = serviceProvider.userSettings;
 
     await userSettings.setBool(key, value);
-    print("sdf");
   }
 }
